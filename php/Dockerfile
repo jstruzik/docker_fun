@@ -17,9 +17,10 @@ RUN sed -i '/^listen = /clisten = 0.0.0.0:9000' /opt/rh/php54/root/etc/php-fpm.d
 RUN sed -i '/^listen.allowed_clients/c;listen.allowed_clients =' /opt/rh/php54/root/etc/php-fpm.d/www.conf
 RUN sed -i '/^;catch_workers_output/ccatch_workers_output = yes' /opt/rh/php54/root/etc/php-fpm.d/www.conf
 
-ADD . /var/www/
+# ADD . /var/www/
 
 EXPOSE 9000
+# EXPOSE 22
 
 # Move to the directory were the php files stands
 WORKDIR /var/www
