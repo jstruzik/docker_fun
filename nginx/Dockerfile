@@ -2,9 +2,6 @@ FROM centos:centos6
 
 MAINTAINER Robin Powered Inc
 
-# Add 'web' user which will run the application
-RUN adduser web --home /home/web --shell /bin/bash --disabled-password --gecos ""
-
 # Update the base system with latest patches
 RUN yum -y update && yum clean all
 
@@ -27,6 +24,8 @@ EXPOSE 80
 USER web
 
 RUN sed -i "s/%fpm-ip%/$FPM_PORT_9000_TCP_ADDR/" /opt/rh/nginx14/root/etc/nginx/nginx.conf
+
+EXPOSE 80
 
 # Launch nginx at start
 CMD ["/opt/rh/nginx14/root/sbin/nginx"]
