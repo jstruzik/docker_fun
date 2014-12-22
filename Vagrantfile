@@ -10,16 +10,27 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.provider "docker" do |d|
     d.vagrant_vagrantfile = "./custom_vm/Vagrantfile"
+    config.vm.network "forwarded_port", guest: 80, host: 8080
   end
 
   config.vm.define "php" do |php|
     php.vm.provider 'docker' do |d|
       d.build_dir = './php'
       d.name = 'robin_php'
-      d.create_args = ['-i', '-t']
       d.ports  = ['9000:9000']
     end
-    php.vm.synced_folder ".", "/var/www", owner: 'web', group: 'web'
+    php.vm.synced_folder "./src", "/var/www/robin", owner: 'web', group: 'web'
+  end
+
+  config.vm.define "nginx" do |nginx|
+    nginx.vm.provider 'docker' do |d|
+      d.build_dir = './nginx'
+      d.name = 'robin_nginx'
+      d.create_args = ['-i', '-t']
+      d.ports  = ['80:80']
+      d.link('robin_php:php')
+    end
+    nginx.vm.synced_folder "./src", "/var/www/robin", owner: 'web', group: 'web'
   end
 
   # Every Vagrant virtual environment requires a box to build off of.

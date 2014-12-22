@@ -16,15 +16,17 @@ RUN rpm -i https://www.softwarecollections.org/en/scls/rhscl/nginx14/epel-6-x86_
 RUN yum -y install nginx14-nginx && yum clean all
 
 # Configure nginx
-ADD ./docker-config/nginx.conf /opt/rh/nginx14/root/etc/nginx/nginx.conf
+ADD ./nginx.conf /opt/rh/nginx14/root/etc/nginx/nginx.conf
 
 # Deploy the static assets
-ADD .  /var/www/
+ADD ../src  /var/www/robin
 
 EXPOSE 80
 
 # Use our new web user
 USER web
+
+RUN sed -i "s/%fpm-ip%/$FPM_PORT_9000_TCP_ADDR/" /opt/rh/nginx14/root/etc/nginx/nginx.conf
 
 # Launch nginx at start
 CMD ["/opt/rh/nginx14/root/sbin/nginx"]
